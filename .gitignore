@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.env
+.vscode/
+*.keras
+*float32.tflite
