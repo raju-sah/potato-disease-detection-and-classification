@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🥔 Potato Leaf Disease AI — Precision Plant Pathology</title>
+  <meta name="description" content="AI-Powered Potato Foliar Disease Detection & Classification using Deep Learning (EfficientNetB3). Instant diagnosis of Early Blight, Late Blight, and Healthy leaves.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥔</text></svg>">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Top Navigation -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="brand-icon">🥔</div>
+        <div>
+          <h1 class="brand-title">Potato Leaf Disease AI</h1>
+          <p class="brand-subtitle">Precision Foliar Pathology & Agronomic Diagnostics</p>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <div class="status-badge" id="systemStatusBadge" title="AI Inference Engine Status">
+          <span class="pulse-dot"></span>
+          <span id="systemStatusText">Model Ready (EfficientNetB3)</span>
+        </div>
+        <button class="btn-icon" id="themeToggleBtn" title="Toggle Dark / Light Theme" aria-label="Toggle Theme">
+          🌙
+        </button>
+      </div>
+    </header>
+
+    <!-- Hero Intro -->
+    <section class="hero-section">
+      <div class="hero-pill">
+        <span>⚡ Deep Learning Inference</span>
+        <span>•</span>
+        <span>256×256 TFLite Quantized</span>
+      </div>
+      <h2 class="hero-title">Instant Crop Pathology Diagnostics</h2>
+      <p class="hero-desc">
+        Upload a leaf photograph or capture a live frame to instantly detect <strong>Early Blight</strong>, <strong>Late Blight</strong>, or confirm <strong>Healthy</strong> foliage with clinical agronomic treatment regimens.
+      </p>
+    </section>
+
+    <!-- Main Grid -->
+    <main class="main-grid">
+      
+      <!-- Left Column: Upload & Controls -->
+      <section class="glass-card" aria-labelledby="inputSectionTitle">
+        <div class="card-header">
+          <h3 class="card-title" id="inputSectionTitle">
+            <span>📷</span> Leaf Image Input
+          </h3>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Step 1 of 2</span>
+        </div>
+
+        <!-- Live Camera View -->
+        <div class="camera-container" id="cameraContainer">
+          <video id="webcamVideo" autoplay playsinline></video>
+          <div class="camera-controls">
+            <button class="btn-upload" id="snapPhotoBtn" type="button">📸 Capture Photo</button>
+            <button class="btn-secondary" id="closeCameraBtn" type="button" style="background: rgba(0,0,0,0.7); color:#fff;">❌ Cancel</button>
+          </div>
+        </div>
+
+        <!-- Dropzone -->
+        <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Drop potato leaf image here or click to browse">
+          <div class="dropzone-icon-wrap">
+            <span>🍃</span>
+          </div>
+          <p class="dropzone-text-main">Drop leaf photo here, or browse files</p>
+          <p class="dropzone-text-sub">Supports JPG, JPEG, PNG, WEBP (Up to 10MB)</p>
+          <button class="btn-upload" id="browseFileBtn" type="button">
+            <span>📂</span> Select Image
+          </button>
+          <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        </div>
+
+        <!-- Alternate Input Options -->
+        <div class="upload-alt-actions">
+          <button class="btn-secondary" id="openCameraBtn" type="button">
+            <span>📸</span> Use Camera
+          </button>
+          <button class="btn-secondary" id="pasteClipboardBtn" type="button">
+            <span>📋</span> Paste Image
+          </button>
+        </div>
+
+        <!-- Image Preview Box -->
+        <div class="preview-container" id="previewContainer">
+          <img id="previewImg" class="preview-image" src="" alt="Selected leaf preview">
+          <div class="preview-overlay">
+            <button class="btn-preview-action" id="removeImgBtn" title="Remove image" aria-label="Remove image">✕</button>
+          </div>
+        </div>
+
+        <!-- Preset Test Samples -->
+        <div class="samples-section">
+          <div class="samples-header">
+            <span>🧪 Quick Test Samples:</span>
+            <span style="font-size: 0.75rem; color: var(--accent-green); cursor: pointer;" id="refreshSamplesBtn">↻ Reload</span>
+          </div>
+          <div class="samples-grid" id="samplesGrid">
+            <!-- Dynamically populated sample chips -->
+          </div>
+        </div>
+
+        <!-- Inference Configuration Settings -->
+        <div class="settings-section">
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Test-Time Augmentation (TTA)</div>
+              <div class="setting-desc">Multi-angle ensemble for higher diagnostic precision</div>
+            </div>
+            <label class="switch" title="Enable Test-Time Augmentation">
+              <input type="checkbox" id="ttaToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row" id="ttaPassesRow" style="display: none;">
+            <div style="width: 100%;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem;">
+                <span class="setting-label">TTA Ensemble Passes</span>
+                <span id="ttaPassesVal" style="font-weight: 700; color: var(--accent-green);">5 Passes</span>
+              </div>
+              <input type="range" class="range-input" id="ttaSlider" min="3" max="12" step="1" value="5">
+            </div>
+          </div>
+
+          <div class="setting-row" style="margin-top: 14px;">
+            <div style="width: 100%;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.82rem;">
+                <span class="setting-label">Low Confidence Threshold</span>
+                <span id="confThreshVal" style="font-weight: 700; color: var(--accent-amber);">70%</span>
+              </div>
+              <input type="range" class="range-input" id="confSlider" min="50" max="90" step="5" value="70">
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button class="btn-diagnose" id="runDiagnosisBtn" disabled>
+          <span id="btnIcon">🧠</span>
+          <span id="btnText">Analyze Leaf Pathology</span>
+        </button>
+
+      </section>
+
+      <!-- Right Column: Results & Treatment Plans -->
+      <section class="results-panel">
+        
+        <!-- Empty State Placeholder -->
+        <div class="glass-card empty-state" id="emptyStateCard">
+          <div class="empty-icon">🌿</div>
+          <h3 class="empty-title">Ready for Diagnosis</h3>
+          <p class="empty-desc">
+            Upload or snap a potato leaf photograph on the left, or select one of the quick test samples to trigger deep learning analysis.
+          </p>
+          
+          <div class="disease-preview-cards">
+            <div class="mini-disease-card early-blight">
+              <span style="font-size: 1.5rem;">🟤</span>
+              <div class="mini-disease-name">Early Blight</div>
+              <div class="mini-disease-sev">Moderate</div>
+            </div>
+            <div class="mini-disease-card healthy">
+              <span style="font-size: 1.5rem;">🌿</span>
+              <div class="mini-disease-name">Healthy</div>
+              <div class="mini-disease-sev">Optimal</div>
+            </div>
+            <div class="mini-disease-card late-blight">
+              <span style="font-size: 1.5rem;">🚨</span>
+              <div class="mini-disease-name">Late Blight</div>
+              <div class="mini-disease-sev">Severe ⚠️</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Result Card -->
+        <div class="glass-card result-card-main" id="resultsCard">
+          
+          <div class="card-header">
+            <h3 class="card-title">
+              <span>📊</span> Clinical Diagnostic Report
+            </h3>
+            <span id="reportTimestamp" style="font-size: 0.8rem; color: var(--text-muted);">Just now</span>
+          </div>
+
+          <!-- Primary Diagnosis Header Banner -->
+          <div class="diagnosis-banner" id="diagnosisBanner">
+            <div class="diagnosis-main-info">
+              <span class="diagnosis-emoji" id="resEmoji">🌿</span>
+              <div>
+                <h2 class="diagnosis-title" id="resTitle">Healthy Foliage</h2>
+                <div class="diagnosis-pathogen" id="resPathogen">No pathogen detected</div>
+              </div>
+            </div>
+            <span class="severity-pill badge-success" id="resSeverityBadge">SEVERITY: NONE</span>
+          </div>
+
+          <!-- Emergency Alert Notice (Late Blight) -->
+          <div class="emergency-alert-box" id="emergencyAlertBox">
+            <div class="alert-icon">🚨</div>
+            <div>
+              <div class="alert-title">EMERGENCY QUARANTINE PROTOCOL ACTIVATED</div>
+              <div class="alert-text">
+                <strong>Phytophthora infestans (Late Blight)</strong> spreads aggressively via airborne sporangia and can devastate whole fields within 48–72 hours. Isolate affected plot rows and prepare systemic fungicide treatments immediately.
+              </div>
+            </div>
+          </div>
+
+          <!-- Key Metrics Grid -->
+          <div class="metrics-row">
+            <div class="metric-card">
+              <div class="metric-val" id="metricConfidence" style="color: var(--accent-green);">98.4%</div>
+              <div class="metric-lbl">Confidence</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" id="metricSeverity">None</div>
+              <div class="metric-lbl">Risk Index</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" id="metricLatency" style="color: var(--accent-blue);">142 ms</div>
+              <div class="metric-lbl">Latency</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val" id="metricMode">Standard</div>
+              <div class="metric-lbl">Inference</div>
+            </div>
+          </div>
+
+          <!-- Probability Distribution Chart -->
+          <div class="probabilities-card">
+            <div class="prob-title">
+              <span>📈 Probability Distribution</span>
+              <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);" id="probSummary">3 Classes</span>
+            </div>
+            
+            <!-- Healthy Bar -->
+            <div class="prob-bar-item">
+              <div class="prob-bar-header">
+                <span>🌿 Healthy Foliage</span>
+                <span id="probValHealthy">0.0%</span>
+              </div>
+              <div class="prob-track">
+                <div class="prob-fill" id="probFillHealthy" style="background: var(--accent-green);"></div>
+              </div>
+            </div>
+
+            <!-- Early Blight Bar -->
+            <div class="prob-bar-item">
+              <div class="prob-bar-header">
+                <span>🟤 Early Blight (Alternaria solani)</span>
+                <span id="probValEarlyBlight">0.0%</span>
+              </div>
+              <div class="prob-track">
+                <div class="prob-fill" id="probFillEarlyBlight" style="background: var(--accent-amber);"></div>
+              </div>
+            </div>
+
+            <!-- Late Blight Bar -->
+            <div class="prob-bar-item">
+              <div class="prob-bar-header">
+                <span>🚨 Late Blight (Phytophthora infestans)</span>
+                <span id="probValLateBlight">0.0%</span>
+              </div>
+              <div class="prob-track">
+                <div class="prob-fill" id="probFillLateBlight" style="background: var(--accent-red);"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disease Encyclopedia & Actionable Agronomy Tabs -->
+          <div>
+            <div class="tabs-nav" role="tablist">
+              <button class="tab-btn active" data-tab="tab-symptoms" type="button">🔬 Symptoms</button>
+              <button class="tab-btn" data-tab="tab-treatment" type="button">💊 Treatment</button>
+              <button class="tab-btn" data-tab="tab-prevention" type="button">🛡️ Prevention</button>
+              <button class="tab-btn" data-tab="tab-causes" type="button">🦠 Pathogen Details</button>
+            </div>
+
+            <div class="tab-pane active" id="tab-symptoms">
+              <ul class="bullet-list" id="symptomsList">
+                <!-- Injected via JS -->
+              </ul>
+            </div>
+
+            <div class="tab-pane" id="tab-treatment">
+              <ul class="bullet-list warning" id="treatmentList">
+                <!-- Injected via JS -->
+              </ul>
+            </div>
+
+            <div class="tab-pane" id="tab-prevention">
+              <ul class="bullet-list" id="preventionList">
+                <!-- Injected via JS -->
+              </ul>
+            </div>
+
+            <div class="tab-pane" id="tab-causes">
+              <ul class="bullet-list danger" id="causesList">
+                <!-- Injected via JS -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Action Toolbar -->
+          <div class="action-toolbar">
+            <button class="btn-tool" id="printReportBtn" type="button">
+              <span>🖨️</span> Print / Export PDF
+            </button>
+            <button class="btn-tool" id="copySummaryBtn" type="button">
+              <span>📋</span> Copy Clinical Summary
+            </button>
+            <button class="btn-tool" id="resetScanBtn" type="button">
+              <span>🔄</span> Scan Another Leaf
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Scan History Section -->
+    <section class="history-section" id="historySection" style="display: none;">
+      <h3 style="font-size: 1.15rem; font-weight: 700;">🕒 Recent Scan History</h3>
+      <div class="history-grid" id="historyGrid">
+        <!-- Injected dynamically -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>🥔 <strong>Potato Leaf Disease AI Classifier</strong> • EfficientNetB3 Quantized Architecture</p>
+      <p style="margin-top: 4px; font-size: 0.8rem; color: var(--text-dim);">
+        Developed for agronomists, farmers, and plant pathology researchers. Fast, offline-capable Edge AI.
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Main JavaScript Application -->
+  <script src="/static/app.js"></script>
+</body>
+</html>
