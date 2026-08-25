@@ -6,7 +6,14 @@
   <img src="https://img.shields.io/badge/TensorFlow_Lite-Quantized-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white"/>
   <img src="https://img.shields.io/badge/FastAPI-0.110+-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
   <img src="https://img.shields.io/badge/EfficientNetB3-ImageNet-00BFA5?style=for-the-badge"/>
+  <a href="https://www.kaggle.com/code/rajucode/potato-leaf-disease-classification-efficientnetb3">
+    <img src="https://img.shields.io/badge/Kaggle_Notebook-Open_in_Kaggle-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white"/>
+  </a>
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge"/>
+</p>
+
+<p align="center">
+  📓 <b>Official Kaggle Training Notebook:</b> <a href="https://www.kaggle.com/code/rajucode/potato-leaf-disease-classification-efficientnetb3"><b>rajucode/potato-leaf-disease-classification-efficientnetb3</b></a>
 </p>
 
 ---
@@ -14,6 +21,7 @@
 ## 📌 Table of Contents
 
 - [Overview](#-overview)
+- [Kaggle Notebook & Dataset](#-kaggle-notebook--dataset)
 - [Disease Classes](#-disease-classes)
 - [Features](#-features)
 - [Project Structure](#-project-structure)
@@ -32,6 +40,9 @@
 ## 🌿 Overview
 
 This project is an end-to-end **deep learning pipeline** for detecting and classifying **potato leaf diseases** from images. It uses **EfficientNetB3** pretrained on ImageNet and fine-tuned on the **Potato Disease Leaf Dataset (PLD)**. The trained model is converted to **TensorFlow Lite** and served through a **FastAPI backend** with a lightweight **vanilla HTML/CSS/JS frontend**.
+
+> 📓 **Full Training Pipeline:** All data preparation, model training, evaluation, and TFLite quantization can be explored and run in the official Kaggle Notebook:  
+> 🔗 **[Kaggle: potato-leaf-disease-classification-efficientnetb3](https://www.kaggle.com/code/rajucode/potato-leaf-disease-classification-efficientnetb3)**
 
 > 🧠 The model was trained on **3,251 images** across 3 classes, achieving high validation accuracy using a two-phase transfer learning approach with label smoothing and test time augmentation.
 
@@ -285,6 +296,8 @@ Runs at `http://localhost:8501`. Note: `packages.txt` + `requirements.txt` are o
 |-|-|
 | **Name** | Raju Sah |
 | **Email** | rajucode7@gmail.com |
+| **Kaggle Profile** | [kaggle.com/rajucode](https://www.kaggle.com/rajucode) |
+| **Kaggle Notebook** | [rajucode/potato-leaf-disease-classification-efficientnetb3](https://www.kaggle.com/code/rajucode/potato-leaf-disease-classification-efficientnetb3) |
 | **LinkedIn** | [linkedin.com/in/raju-sah](https://www.linkedin.com/in/raju-sah/) |
 | **GitHub** | [github.com/raju-sah](https://github.com/raju-sah) |
 

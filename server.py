@@ -241,17 +241,76 @@ async def get_model_info():
 @app.get("/api/samples")
 async def list_sample_images():
     samples_dir = os.path.join(STATIC_DIR, "samples")
+    sample_metadata = {
+        "01_real_early_blight_1.jpg": {
+            "name": "Early Blight (Real #1)",
+            "expected_class": "Early_Blight",
+            "emoji": "🟤",
+            "tag": "Alternaria solani",
+            "badge": "Early Blight"
+        },
+        "02_real_early_blight_2.jpg": {
+            "name": "Early Blight (Real #2)",
+            "expected_class": "Early_Blight",
+            "emoji": "🟤",
+            "tag": "Alternaria solani",
+            "badge": "Early Blight"
+        },
+        "03_real_healthy_1.jpg": {
+            "name": "Healthy Leaf (Real #1)",
+            "expected_class": "Healthy",
+            "emoji": "🌿",
+            "tag": "Healthy Foliage",
+            "badge": "Healthy"
+        },
+        "04_real_healthy_2.jpg": {
+            "name": "Healthy Leaf (Real #2)",
+            "expected_class": "Healthy",
+            "emoji": "🌿",
+            "tag": "Healthy Foliage",
+            "badge": "Healthy"
+        },
+        "05_real_late_blight_1.jpg": {
+            "name": "Late Blight (Real #1)",
+            "expected_class": "Late_Blight",
+            "emoji": "🚨",
+            "tag": "Phytophthora infestans",
+            "badge": "Late Blight"
+        },
+        "06_real_late_blight_2.jpg": {
+            "name": "Late Blight (Real #2)",
+            "expected_class": "Late_Blight",
+            "emoji": "🚨",
+            "tag": "Phytophthora infestans",
+            "badge": "Late Blight"
+        }
+    }
+    
     samples = []
     if os.path.exists(samples_dir):
         for f in sorted(os.listdir(samples_dir)):
             if f.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
-                label = f.rsplit(".", 1)[0].replace("_", " ").title()
+                meta = sample_metadata.get(f, {
+                    "name": f.rsplit(".", 1)[0].replace("_", " ").title(),
+                    "expected_class": "Unknown",
+                    "emoji": "🍃",
+                    "tag": "PLD Dataset",
+                    "badge": "Dataset Sample"
+                })
                 samples.append({
                     "id": f,
-                    "name": label,
+                    "name": meta["name"],
+                    "expected_class": meta.get("expected_class"),
+                    "emoji": meta.get("emoji", "🍃"),
+                    "tag": meta.get("tag", "PLD"),
+                    "badge": meta.get("badge", "Sample"),
                     "url": f"/static/samples/{f}"
                 })
-    return {"samples": samples}
+    return {
+        "dataset_name": "Potato Disease Leaf Dataset (PLD)",
+        "kaggle_url": "https://www.kaggle.com/datasets/rizwan123456789/potato-disease-leaf-datasetpld",
+        "samples": samples
+    }
 
 @app.post("/api/predict")
 async def predict_endpoint(

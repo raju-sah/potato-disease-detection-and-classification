@@ -275,7 +275,7 @@ DOM.snapPhotoBtn.addEventListener('click', () => {
   }, 'image/jpeg', 0.95);
 });
 
-// ── Preset Test Samples ──────────────────────────────────────────────────────
+// ── Preset Test Samples (Real PLD Dataset) ──────────────────────────────────
 async function loadPresetSamples() {
   try {
     const res = await fetch('/api/samples');
@@ -288,19 +288,19 @@ async function loadPresetSamples() {
         const chip = document.createElement('div');
         chip.className = 'sample-chip';
         
-        let emoji = '🍃';
-        if (sample.name.toLowerCase().includes('healthy')) emoji = '🌿';
-        else if (sample.name.toLowerCase().includes('early')) emoji = '🟤';
-        else if (sample.name.toLowerCase().includes('late')) emoji = '🚨';
+        let badgeClass = 'badge-hl';
+        if (sample.expected_class === 'Early_Blight') badgeClass = 'badge-eb';
+        else if (sample.expected_class === 'Late_Blight') badgeClass = 'badge-lb';
 
         chip.innerHTML = `
-          <div class="sample-chip-emoji">${emoji}</div>
-          <div class="sample-chip-name">${sample.name}</div>
+          <img src="${sample.url}" alt="${sample.name}" class="sample-chip-thumb" loading="lazy">
+          <span class="sample-chip-badge ${badgeClass}">${sample.badge || sample.expected_class.replace('_', ' ')}</span>
+          <span class="sample-chip-name" title="${sample.name}">${sample.name}</span>
         `;
 
         chip.addEventListener('click', async () => {
           try {
-            showToast(`Loading ${sample.name}...`, '⏳');
+            showToast(`Loading real sample: ${sample.name}...`, '🧪');
             const imgRes = await fetch(sample.url);
             const blob = await imgRes.blob();
             const file = new File([blob], sample.id, { type: blob.type || 'image/jpeg' });
