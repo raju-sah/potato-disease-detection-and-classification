@@ -8,14 +8,130 @@ const AppState = {
   webcamStream: null
 };
 
+// ── Preset Samples Metadata ──────────────────────────────────────────────────
+const STATIC_SAMPLES = [
+  { id: "01_real_early_blight_1.jpg", name: "Early Blight (Real #1)", expected_class: "Early_Blight", badge: "Early Blight", url: "./samples/01_real_early_blight_1.jpg" },
+  { id: "02_real_early_blight_2.jpg", name: "Early Blight (Real #2)", expected_class: "Early_Blight", badge: "Early Blight", url: "./samples/02_real_early_blight_2.jpg" },
+  { id: "03_real_healthy_1.jpg", name: "Healthy Leaf (Real #1)", expected_class: "Healthy", badge: "Healthy", url: "./samples/03_real_healthy_1.jpg" },
+  { id: "04_real_healthy_2.jpg", name: "Healthy Leaf (Real #2)", expected_class: "Healthy", badge: "Healthy", url: "./samples/04_real_healthy_2.jpg" },
+  { id: "05_real_late_blight_1.jpg", name: "Late Blight (Real #1)", expected_class: "Late_Blight", badge: "Late Blight", url: "./samples/05_real_late_blight_1.jpg" },
+  { id: "06_real_late_blight_2.jpg", name: "Late Blight (Real #2)", expected_class: "Late_Blight", badge: "Late Blight", url: "./samples/06_real_late_blight_2.jpg" }
+];
+
+const DISEASE_INFO = {
+  "Early_Blight": {
+    "emoji": "🟤",
+    "name": "Early Blight",
+    "pathogen": "Alternaria solani",
+    "severity": "Moderate",
+    "severity_level": 2,
+    "color": "#f59e0b",
+    "badge_class": "badge-warning",
+    "description": "A destructive fungal disease characterized by dark brown concentric 'target board' spots on mature foliage, typically starting on lower leaves and moving upwards.",
+    "symptoms": [
+      "Concentric ringed brown/black target spots",
+      "Yellow chlorotic halos surrounding leaf lesions",
+      "Premature defoliation and leaf curling",
+      "Dark, sunken stem lesions near base"
+    ],
+    "causes": [
+      "Fungal pathogen Alternaria solani",
+      "Warm temperatures (24°C – 29°C) with high humidity",
+      "Prolonged leaf wetness from rain or overhead irrigation",
+      "Plant stress and nitrogen deficiency"
+    ],
+    "treatment": [
+      "Apply targeted fungicides (Chlorothalonil, Mancozeb, or Copper-based sprays)",
+      "Prune and dispose of lower infected foliage promptly",
+      "Avoid sprinkler/overhead irrigation; switch to drip watering",
+      "Apply balanced fertilizer to boost plant vigor"
+    ],
+    "prevention": [
+      "Plant certified disease-resistant potato seed varieties",
+      "Practice 3-year crop rotation avoiding Solanaceae family",
+      "Apply organic mulch to stop fungal soil splashback",
+      "Ensure adequate row spacing for optimum canopy airflow"
+    ],
+    "urgent_alert": false
+  },
+  "Healthy": {
+    "emoji": "🌿",
+    "name": "Healthy Plant",
+    "pathogen": "None (Optimum Foliage)",
+    "severity": "None",
+    "severity_level": 0,
+    "color": "#10b981",
+    "badge_class": "badge-success",
+    "description": "The potato leaf displays pristine vitality. Foliage is crisp, uniformly pigmented, with vigorous vascular structure and no pathogenic lesions.",
+    "symptoms": [
+      "Uniform vibrant emerald green pigmentation",
+      "Intact leaf margins and firm leaf cuticle",
+      "No necrotic spots, water-soaking, or powdery mold",
+      "Strong turgid petiole and upright leaf posture"
+    ],
+    "causes": [
+      "Balanced soil nutrients (N-P-K & micronutrients)",
+      "Optimal sunlight exposure (6-8 hours daily)",
+      "Adequate soil drainage and regulated moisture",
+      "Absence of foliar pathogens and pest vectors"
+    ],
+    "treatment": [
+      "No chemical or corrective treatment required!",
+      "Maintain consistent routine watering schedule",
+      "Monitor canopy periodically for early lesion onset",
+      "Maintain balanced N-P-K nutrient application"
+    ],
+    "prevention": [
+      "Continue standard good agronomic practices (GAP)",
+      "Ensure soil drainage remains uncompromised",
+      "Inspect adjacent Solanaceae crops regularly",
+      "Sanitize pruning shears between field blocks"
+    ],
+    "urgent_alert": false
+  },
+  "Late_Blight": {
+    "emoji": "🚨",
+    "name": "Late Blight",
+    "pathogen": "Phytophthora infestans",
+    "severity": "Severe / Critical",
+    "severity_level": 3,
+    "color": "#ef4444",
+    "badge_class": "badge-danger",
+    "description": "A devastating oomycete pathogen capable of destroying entire potato canopies within 7–10 days under cool, humid conditions. Responsible for the historic Great Irish Famine.",
+    "symptoms": [
+      "Water-soaked dark lesions spreading rapidly on foliage",
+      "White fungal sporulation/fuzz on leaf undersides in high humidity",
+      "Rapid systemic tissue necrosis and foliar collapse",
+      "Foul odor in canopy from decomposing necrotic tissue"
+    ],
+    "causes": [
+      "Oomycete pathogen Phytophthora infestans",
+      "Cool to moderate temperatures (10°C – 20°C) with relative humidity > 90%",
+      "Infected seed tubers or volunteer potato cull piles",
+      "Airborne sporangia carried on wind currents"
+    ],
+    "treatment": [
+      "IMMEDIATE ACTION REQUIRED: Apply systemic curative fungicides (Metalaxyl, Cymoxanil, Dimethomorph)",
+      "Remove, bag, and bury/destroy heavily infected plants — DO NOT COMPOST",
+      "Establish a mandatory 5-day protective spray schedule for surrounding rows",
+      "Notify neighboring growers of active regional pathogen sporulation"
+    ],
+    "prevention": [
+      "Plant certified disease-free seed tubers only",
+      "Eliminate all cull piles and volunteer potatoes before planting",
+      "Utilize blight forecasting warning systems (e.g., Blitecast / Simcast)",
+      "Apply prophylactic protective fungicides prior to canopy closure"
+    ],
+    "urgent_alert": true
+  }
+};
+
 // ── DOM Element Cache ────────────────────────────────────────────────────────
 const DOM = {
-  // Theme & Status
   themeToggleBtn: document.getElementById('themeToggleBtn'),
   systemStatusText: document.getElementById('systemStatusText'),
   toastContainer: document.getElementById('toastContainer'),
 
-  // Inputs & Dropzone
   dropzone: document.getElementById('dropzone'),
   fileInput: document.getElementById('fileInput'),
   browseFileBtn: document.getElementById('browseFileBtn'),
@@ -31,7 +147,6 @@ const DOM = {
   samplesGrid: document.getElementById('samplesGrid'),
   refreshSamplesBtn: document.getElementById('refreshSamplesBtn'),
 
-  // Settings
   ttaToggle: document.getElementById('ttaToggle'),
   ttaPassesRow: document.getElementById('ttaPassesRow'),
   ttaSlider: document.getElementById('ttaSlider'),
@@ -42,7 +157,6 @@ const DOM = {
   btnIcon: document.getElementById('btnIcon'),
   btnText: document.getElementById('btnText'),
 
-  // Results
   emptyStateCard: document.getElementById('emptyStateCard'),
   resultsCard: document.getElementById('resultsCard'),
   reportTimestamp: document.getElementById('reportTimestamp'),
@@ -53,38 +167,38 @@ const DOM = {
   resSeverityBadge: document.getElementById('resSeverityBadge'),
   emergencyAlertBox: document.getElementById('emergencyAlertBox'),
   
-  // Metrics
   metricConfidence: document.getElementById('metricConfidence'),
   metricSeverity: document.getElementById('metricSeverity'),
   metricLatency: document.getElementById('metricLatency'),
   metricMode: document.getElementById('metricMode'),
+  
+  probHealthyVal: document.getElementById('probHealthyVal'),
+  probHealthyBar: document.getElementById('probHealthyBar'),
+  probEbVal: document.getElementById('probEbVal'),
+  probEbBar: document.getElementById('probEbBar'),
+  probLbVal: document.getElementById('probLbVal'),
+  probLbBar: document.getElementById('probLbBar'),
 
-  // Probabilities
-  probValHealthy: document.getElementById('probValHealthy'),
-  probFillHealthy: document.getElementById('probFillHealthy'),
-  probValEarlyBlight: document.getElementById('probValEarlyBlight'),
-  probFillEarlyBlight: document.getElementById('probFillEarlyBlight'),
-  probValLateBlight: document.getElementById('probValLateBlight'),
-  probFillLateBlight: document.getElementById('probFillLateBlight'),
-
-  // Tabs & Diagnostics
+  tabBtns: document.querySelectorAll('.tab-btn'),
+  tabPanes: document.querySelectorAll('.tab-pane'),
+  diagDescription: document.getElementById('diagDescription'),
   symptomsList: document.getElementById('symptomsList'),
   treatmentList: document.getElementById('treatmentList'),
   preventionList: document.getElementById('preventionList'),
-  causesList: document.getElementById('causesList'),
+  pathogenName: document.getElementById('pathogenName'),
+  pathogenCausesList: document.getElementById('pathogenCausesList'),
 
-  // Action Tools
   printReportBtn: document.getElementById('printReportBtn'),
   copySummaryBtn: document.getElementById('copySummaryBtn'),
-  resetScanBtn: document.getElementById('resetScanBtn'),
+  scanAnotherBtn: document.getElementById('scanAnotherBtn'),
 
-  // History
   historySection: document.getElementById('historySection'),
   historyGrid: document.getElementById('historyGrid')
 };
 
 // ── Toast Utility ────────────────────────────────────────────────────────────
 function showToast(message, icon = '🍃', duration = 3500) {
+  if (!DOM.toastContainer) return;
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
@@ -101,86 +215,104 @@ function showToast(message, icon = '🍃', duration = 3500) {
 function initTheme() {
   const saved = localStorage.getItem('potatodx_theme') || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
-  DOM.themeToggleBtn.innerHTML = saved === 'dark' ? '🌙' : '☀️';
+  if (DOM.themeToggleBtn) {
+    DOM.themeToggleBtn.innerHTML = saved === 'dark' ? '🌙' : '☀️';
+  }
 }
 
-DOM.themeToggleBtn.addEventListener('click', () => {
-  const current = document.documentElement.getAttribute('data-theme') || 'dark';
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('potatodx_theme', next);
-  DOM.themeToggleBtn.innerHTML = next === 'dark' ? '🌙' : '☀️';
-  showToast(`Theme switched to ${next} mode`, next === 'dark' ? '🌙' : '☀️');
-});
+if (DOM.themeToggleBtn) {
+  DOM.themeToggleBtn.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('potatodx_theme', next);
+    DOM.themeToggleBtn.innerHTML = next === 'dark' ? '🌙' : '☀️';
+    showToast(`Theme switched to ${next} mode`, next === 'dark' ? '🌙' : '☀️');
+  });
+}
 
 // ── Settings Handlers ────────────────────────────────────────────────────────
-DOM.ttaToggle.addEventListener('change', (e) => {
-  DOM.ttaPassesRow.style.display = e.target.checked ? 'flex' : 'none';
-});
+if (DOM.ttaToggle) {
+  DOM.ttaToggle.addEventListener('change', (e) => {
+    if (DOM.ttaPassesRow) DOM.ttaPassesRow.style.display = e.target.checked ? 'flex' : 'none';
+  });
+}
 
-DOM.ttaSlider.addEventListener('input', (e) => {
-  DOM.ttaPassesVal.textContent = `${e.target.value} Passes`;
-});
+if (DOM.ttaSlider) {
+  DOM.ttaSlider.addEventListener('input', (e) => {
+    if (DOM.ttaPassesVal) DOM.ttaPassesVal.textContent = `${e.target.value} Passes`;
+  });
+}
 
-DOM.confSlider.addEventListener('input', (e) => {
-  DOM.confThreshVal.textContent = `${e.target.value}%`;
-});
+if (DOM.confSlider) {
+  DOM.confSlider.addEventListener('input', (e) => {
+    if (DOM.confThreshVal) DOM.confThreshVal.textContent = `${e.target.value}%`;
+  });
+}
 
 // ── File Selection & Drag-and-Drop ───────────────────────────────────────────
-DOM.browseFileBtn.addEventListener('click', () => DOM.fileInput.click());
-DOM.dropzone.addEventListener('click', (e) => {
-  if (e.target !== DOM.browseFileBtn && !DOM.browseFileBtn.contains(e.target)) {
+if (DOM.browseFileBtn && DOM.fileInput) {
+  DOM.browseFileBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
     DOM.fileInput.click();
-  }
-});
+  });
+}
 
-DOM.fileInput.addEventListener('change', (e) => {
-  if (e.target.files && e.target.files[0]) {
-    handleFile(e.target.files[0]);
-  }
-});
+if (DOM.dropzone && DOM.fileInput) {
+  DOM.dropzone.addEventListener('click', (e) => {
+    DOM.fileInput.click();
+  });
 
-DOM.dropzone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  DOM.dropzone.classList.add('drag-active');
-});
+  DOM.dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    DOM.dropzone.classList.add('drag-active');
+  });
 
-DOM.dropzone.addEventListener('dragleave', () => {
-  DOM.dropzone.classList.remove('drag-active');
-});
+  DOM.dropzone.addEventListener('dragleave', () => {
+    DOM.dropzone.classList.remove('drag-active');
+  });
 
-DOM.dropzone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  DOM.dropzone.classList.remove('drag-active');
-  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-    handleFile(e.dataTransfer.files[0]);
-  }
-});
+  DOM.dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    DOM.dropzone.classList.remove('drag-active');
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFile(e.dataTransfer.files[0]);
+    }
+  });
+}
 
-// Clipboard Paste
-DOM.pasteClipboardBtn.addEventListener('click', async () => {
-  try {
-    const items = await navigator.clipboard.read();
-    for (const item of items) {
-      for (const type of item.types) {
-        if (type.startsWith('image/')) {
-          const blob = await item.getType(type);
-          const file = new File([blob], 'clipboard_leaf.png', { type });
-          handleFile(file);
-          showToast('Image pasted from clipboard', '📋');
-          return;
+if (DOM.fileInput) {
+  DOM.fileInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFile(e.target.files[0]);
+    }
+  });
+}
+
+if (DOM.pasteClipboardBtn) {
+  DOM.pasteClipboardBtn.addEventListener('click', async () => {
+    try {
+      const items = await navigator.clipboard.read();
+      for (const item of items) {
+        for (const type of item.types) {
+          if (type.startsWith('image/')) {
+            const blob = await item.getType(type);
+            const file = new File([blob], `clipboard_${Date.now()}.png`, { type });
+            handleFile(file);
+            showToast('Image pasted from clipboard', '📋');
+            return;
+          }
         }
       }
+      showToast('No image found in clipboard', '⚠️');
+    } catch (err) {
+      showToast('Clipboard access denied. Press Ctrl+V directly.', '⚠️');
     }
-    showToast('No image found in clipboard', '⚠️');
-  } catch (err) {
-    showToast('Clipboard access denied or unsupported', '⚠️');
-  }
-});
+  });
+}
 
-// Global Paste
 window.addEventListener('paste', (e) => {
-  if (e.clipboardData && e.clipboardData.files && e.clipboardData.files[0]) {
+  if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
     const file = e.clipboardData.files[0];
     if (file.type.startsWith('image/')) {
       handleFile(file);
@@ -194,8 +326,11 @@ function handleFile(file) {
     showToast('Please select a valid image file (JPG, PNG, WEBP)', '❌');
     return;
   }
+  if (file.size > 15 * 1024 * 1024) {
+    showToast('Image size exceeds 15MB limit', '❌');
+    return;
+  }
 
-  stopWebcam();
   AppState.currentFile = file;
   
   if (AppState.currentPreviewUrl) {
@@ -203,17 +338,19 @@ function handleFile(file) {
   }
   AppState.currentPreviewUrl = URL.createObjectURL(file);
   
-  DOM.previewImg.src = AppState.currentPreviewUrl;
-  DOM.previewContainer.classList.add('active');
-  DOM.dropzone.style.display = 'none';
-  DOM.runDiagnosisBtn.disabled = false;
+  if (DOM.previewImg) DOM.previewImg.src = AppState.currentPreviewUrl;
+  if (DOM.previewContainer) DOM.previewContainer.classList.add('active');
+  if (DOM.dropzone) DOM.dropzone.style.display = 'none';
+  if (DOM.runDiagnosisBtn) DOM.runDiagnosisBtn.disabled = false;
   
   showToast(`Loaded ${file.name}`, '🖼️');
 }
 
-DOM.removeImgBtn.addEventListener('click', () => {
-  resetFileInput();
-});
+if (DOM.removeImgBtn) {
+  DOM.removeImgBtn.addEventListener('click', () => {
+    resetFileInput();
+  });
+}
 
 function resetFileInput() {
   AppState.currentFile = null;
@@ -221,140 +358,324 @@ function resetFileInput() {
     URL.revokeObjectURL(AppState.currentPreviewUrl);
     AppState.currentPreviewUrl = null;
   }
-  DOM.fileInput.value = '';
-  DOM.previewImg.src = '';
-  DOM.previewContainer.classList.remove('active');
-  DOM.dropzone.style.display = 'block';
-  DOM.runDiagnosisBtn.disabled = true;
+  if (DOM.fileInput) DOM.fileInput.value = '';
+  if (DOM.previewImg) DOM.previewImg.src = '';
+  if (DOM.previewContainer) DOM.previewContainer.classList.remove('active');
+  if (DOM.dropzone) DOM.dropzone.style.display = 'block';
+  if (DOM.runDiagnosisBtn) DOM.runDiagnosisBtn.disabled = true;
 }
 
 // ── Live Camera Stream ───────────────────────────────────────────────────────
-DOM.openCameraBtn.addEventListener('click', async () => {
-  resetFileInput();
-  try {
-    AppState.webcamStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
-      audio: false
-    });
-    DOM.webcamVideo.srcObject = AppState.webcamStream;
-    DOM.cameraContainer.classList.add('active');
-    DOM.dropzone.style.display = 'none';
-    showToast('Camera active — center leaf in view', '📸');
-  } catch (err) {
-    console.error(err);
-    showToast('Unable to access webcam: ' + err.message, '❌');
-  }
-});
+if (DOM.openCameraBtn) {
+  DOM.openCameraBtn.addEventListener('click', async () => {
+    resetFileInput();
+    try {
+      AppState.webcamStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      });
+      if (DOM.webcamVideo) DOM.webcamVideo.srcObject = AppState.webcamStream;
+      if (DOM.cameraContainer) DOM.cameraContainer.classList.add('active');
+      if (DOM.dropzone) DOM.dropzone.style.display = 'none';
+      showToast('Camera active — center leaf in view', '📸');
+    } catch (err) {
+      console.error(err);
+      showToast('Unable to access webcam: ' + err.message, '❌');
+    }
+  });
+}
 
-DOM.closeCameraBtn.addEventListener('click', stopWebcam);
+if (DOM.closeCameraBtn) {
+  DOM.closeCameraBtn.addEventListener('click', stopWebcam);
+}
 
 function stopWebcam() {
   if (AppState.webcamStream) {
     AppState.webcamStream.getTracks().forEach(t => t.stop());
     AppState.webcamStream = null;
   }
-  DOM.cameraContainer.classList.remove('active');
-  if (!AppState.currentFile) {
+  if (DOM.cameraContainer) DOM.cameraContainer.classList.remove('active');
+  if (!AppState.currentFile && DOM.dropzone) {
     DOM.dropzone.style.display = 'block';
   }
 }
 
-DOM.snapPhotoBtn.addEventListener('click', () => {
-  if (!AppState.webcamStream) return;
-  const canvas = document.createElement('canvas');
-  canvas.width = DOM.webcamVideo.videoWidth || 640;
-  canvas.height = DOM.webcamVideo.videoHeight || 480;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(DOM.webcamVideo, 0, 0, canvas.width, canvas.height);
-  
-  canvas.toBlob((blob) => {
-    const file = new File([blob], `camera_leaf_${Date.now()}.jpg`, { type: 'image/jpeg' });
-    stopWebcam();
-    handleFile(file);
-    showToast('Photo captured!', '📸');
-  }, 'image/jpeg', 0.95);
-});
-
-// ── Preset Test Samples (Real PLD Dataset) ──────────────────────────────────
-async function loadPresetSamples() {
-  try {
-    const res = await fetch('/api/samples');
-    if (!res.ok) return;
-    const data = await res.json();
-    DOM.samplesGrid.innerHTML = '';
+if (DOM.snapPhotoBtn) {
+  DOM.snapPhotoBtn.addEventListener('click', () => {
+    if (!AppState.webcamStream || !DOM.webcamVideo) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = DOM.webcamVideo.videoWidth || 640;
+    canvas.height = DOM.webcamVideo.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(DOM.webcamVideo, 0, 0, canvas.width, canvas.height);
     
-    if (data.samples && data.samples.length > 0) {
-      data.samples.forEach(sample => {
-        const chip = document.createElement('div');
-        chip.className = 'sample-chip';
-        
-        let badgeClass = 'badge-hl';
-        if (sample.expected_class === 'Early_Blight') badgeClass = 'badge-eb';
-        else if (sample.expected_class === 'Late_Blight') badgeClass = 'badge-lb';
-
-        chip.innerHTML = `
-          <img src="${sample.url}" alt="${sample.name}" class="sample-chip-thumb" loading="lazy">
-          <span class="sample-chip-badge ${badgeClass}">${sample.badge || sample.expected_class.replace('_', ' ')}</span>
-          <span class="sample-chip-name" title="${sample.name}">${sample.name}</span>
-        `;
-
-        chip.addEventListener('click', async () => {
-          try {
-            showToast(`Loading real sample: ${sample.name}...`, '🧪');
-            const imgRes = await fetch(sample.url);
-            const blob = await imgRes.blob();
-            const file = new File([blob], sample.id, { type: blob.type || 'image/jpeg' });
-            handleFile(file);
-            // Auto trigger analysis on sample click
-            runDiagnosis();
-          } catch (err) {
-            showToast('Failed to load sample image', '❌');
-          }
-        });
-
-        DOM.samplesGrid.appendChild(chip);
-      });
-    } else {
-      DOM.samplesGrid.innerHTML = '<div style="grid-column: 1/-1; font-size: 0.8rem; color: var(--text-muted); text-align: center;">No preset samples found</div>';
-    }
-  } catch (err) {
-    console.error('Samples loading error:', err);
-  }
+    canvas.toBlob((blob) => {
+      const file = new File([blob], `camera_leaf_${Date.now()}.jpg`, { type: 'image/jpeg' });
+      stopWebcam();
+      handleFile(file);
+      showToast('Photo captured!', '📸');
+    }, 'image/jpeg', 0.95);
+  });
 }
 
-DOM.refreshSamplesBtn.addEventListener('click', loadPresetSamples);
+// ── Preset Test Samples ──────────────────────────────────────────────────────
+async function loadPresetSamples() {
+  if (!DOM.samplesGrid) return;
+  
+  let samples = STATIC_SAMPLES;
+  try {
+    const res = await fetch('/api/samples');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.samples && data.samples.length > 0) {
+        samples = data.samples;
+      }
+    }
+  } catch (e) {
+    // Uses fallback STATIC_SAMPLES
+  }
+
+  DOM.samplesGrid.innerHTML = '';
+  samples.forEach(sample => {
+    const chip = document.createElement('div');
+    chip.className = 'sample-chip';
+    
+    let badgeClass = 'badge-hl';
+    if (sample.expected_class === 'Early_Blight') badgeClass = 'badge-eb';
+    else if (sample.expected_class === 'Late_Blight') badgeClass = 'badge-lb';
+
+    const thumbUrl = sample.url.startsWith('/') || sample.url.startsWith('./') ? sample.url : `./samples/${sample.id}`;
+
+    chip.innerHTML = `
+      <img src="${thumbUrl}" alt="${sample.name}" class="sample-chip-thumb" loading="lazy">
+      <span class="sample-chip-badge ${badgeClass}">${sample.badge || sample.expected_class.replace('_', ' ')}</span>
+      <span class="sample-chip-name" title="${sample.name}">${sample.name}</span>
+    `;
+
+    chip.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      try {
+        showToast(`Loading sample: ${sample.name}...`, '🧪');
+        const imgRes = await fetch(thumbUrl);
+        const blob = await imgRes.blob();
+        const file = new File([blob], sample.id, { type: blob.type || 'image/jpeg' });
+        handleFile(file);
+        setTimeout(() => runDiagnosis(), 250);
+      } catch (err) {
+        showToast('Failed to load sample image', '❌');
+      }
+    });
+
+    DOM.samplesGrid.appendChild(chip);
+  });
+}
+
+if (DOM.refreshSamplesBtn) {
+  DOM.refreshSamplesBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    loadPresetSamples();
+    showToast('Samples reloaded', '🔄');
+  });
+}
+
+// ── In-Browser TFLite Engine (WASM Client-side Fallback) ─────────────────────
+let tfliteModel = null;
+let isModelLoading = false;
+
+async function initTFLiteEngine() {
+  if (tfliteModel || isModelLoading) return tfliteModel;
+  isModelLoading = true;
+  try {
+    if (typeof tflite !== 'undefined') {
+      tflite.setWasmPath('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-tflite@0.0.1-alpha.10/dist/');
+      tfliteModel = await tflite.loadTFLiteModel('./model/potato_quantized.tflite');
+      console.log('✅ Client-side TFLite WASM Engine Initialized');
+      if (DOM.systemStatusText) {
+        DOM.systemStatusText.textContent = 'Edge AI (WASM 256×256)';
+      }
+    }
+  } catch (err) {
+    console.warn('TFLite WASM Engine info:', err);
+  } finally {
+    isModelLoading = false;
+  }
+  return tfliteModel;
+}
+
+function applyTemperatureScaling(probs, temperature = 0.70) {
+  const logProbs = probs.map(p => Math.log(Math.max(p, 1e-12)) / temperature);
+  const maxLog = Math.max(...logProbs);
+  const expProbs = logProbs.map(lp => Math.exp(lp - maxLog));
+  const sumExp = expProbs.reduce((a, b) => a + b, 0);
+  return expProbs.map(p => p / sumExp);
+}
+
+async function runClientInference(imageElement, useTTA = true, ttaPasses = 9) {
+  const model = await initTFLiteEngine();
+  const startTime = performance.now();
+  const CLASS_NAMES = ['Early_Blight', 'Healthy', 'Late_Blight'];
+  
+  if (!model) {
+    throw new Error('Local TFLite WASM engine is loading. Please retry in a few seconds.');
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d');
+  
+  function getPreprocessedTensor(augOp) {
+    ctx.clearRect(0, 0, 256, 256);
+    ctx.save();
+    if (augOp === 'mirror') {
+      ctx.translate(256, 0); ctx.scale(-1, 1);
+    } else if (augOp === 'flip') {
+      ctx.translate(0, 256); ctx.scale(1, -1);
+    } else if (augOp === 'rot90') {
+      ctx.translate(256, 0); ctx.rotate(Math.PI / 2);
+    } else if (augOp === 'rot180') {
+      ctx.translate(256, 256); ctx.rotate(Math.PI);
+    } else if (augOp === 'rot270') {
+      ctx.translate(0, 256); ctx.rotate(-Math.PI / 2);
+    }
+    ctx.drawImage(imageElement, 0, 0, 256, 256);
+    ctx.restore();
+    
+    const imgData = ctx.getImageData(0, 0, 256, 256);
+    const floatArr = new Float32Array(256 * 256 * 3);
+    let p = 0;
+    for (let i = 0; i < imgData.data.length; i += 4) {
+      floatArr[p++] = imgData.data[i] / 255.0;
+      floatArr[p++] = imgData.data[i + 1] / 255.0;
+      floatArr[p++] = imgData.data[i + 2] / 255.0;
+    }
+    return tf.tensor4d(floatArr, [1, 256, 256, 3], 'float32');
+  }
+
+  const augList = ['none', 'mirror', 'flip', 'rot90', 'rot180', 'rot270'];
+  const passesToRun = useTTA ? Math.min(ttaPasses, augList.length) : 1;
+  const logProbAccum = [0, 0, 0];
+
+  for (let passIdx = 0; passIdx < passesToRun; passIdx++) {
+    const inputTensor = getPreprocessedTensor(augList[passIdx]);
+    const outputTensor = model.predict(inputTensor);
+    const outData = Array.from(await outputTensor.data());
+    inputTensor.dispose();
+    outputTensor.dispose();
+
+    for (let c = 0; c < 3; c++) {
+      logProbAccum[c] += Math.log(Math.max(outData[c], 1e-12));
+    }
+  }
+
+  const geoMean = logProbAccum.map(lp => Math.exp(lp / passesToRun));
+  const sumGeo = geoMean.reduce((a, b) => a + b, 0);
+  const normalizedProbs = geoMean.map(p => p / sumGeo);
+  const scaledProbs = applyTemperatureScaling(normalizedProbs, 0.70);
+
+  let predIdx = 0;
+  for (let i = 1; i < 3; i++) {
+    if (scaledProbs[i] > scaledProbs[predIdx]) predIdx = i;
+  }
+  const predClass = CLASS_NAMES[predIdx];
+  const confPct = scaledProbs[predIdx] * 100.0;
+  const diseaseDetails = DISEASE_INFO[predClass];
+
+  const probabilitiesDict = {};
+  CLASS_NAMES.forEach((clsName, idx) => {
+    probabilitiesDict[clsName] = {
+      name: DISEASE_INFO[clsName].name,
+      emoji: DISEASE_INFO[clsName].emoji,
+      probability: Number((scaledProbs[idx] * 100.0).toFixed(2)),
+      raw_prob: scaledProbs[idx],
+      color: DISEASE_INFO[clsName].color
+    };
+  });
+
+  const durationMs = performance.now() - startTime;
+
+  return {
+    status: 'success',
+    prediction: {
+      class_key: predClass,
+      display_name: diseaseDetails.name,
+      pathogen: diseaseDetails.pathogen,
+      emoji: diseaseDetails.emoji,
+      confidence: Number(confPct.toFixed(2)),
+      confidence_threshold: 70.0,
+      is_low_confidence: confPct < 70.0,
+      severity: diseaseDetails.severity,
+      severity_level: diseaseDetails.severity_level,
+      badge_class: diseaseDetails.badge_class,
+      color: diseaseDetails.color,
+      urgent_alert: diseaseDetails.urgent_alert && confPct >= 60.0
+    },
+    probabilities: probabilitiesDict,
+    diagnostics: {
+      description: diseaseDetails.description,
+      symptoms: diseaseDetails.symptoms,
+      causes: diseaseDetails.causes,
+      treatment: diseaseDetails.treatment,
+      prevention: diseaseDetails.prevention
+    },
+    meta: {
+      filename: 'client_inference.jpg',
+      image_size: { width: 256, height: 256 },
+      image_format: 'JPEG',
+      inference_time_ms: Number(durationMs.toFixed(2)),
+      tta_applied: useTTA,
+      tta_passes: passesToRun
+    }
+  };
+}
 
 // ── AI Inference Request ─────────────────────────────────────────────────────
-DOM.runDiagnosisBtn.addEventListener('click', runDiagnosis);
+if (DOM.runDiagnosisBtn) {
+  DOM.runDiagnosisBtn.addEventListener('click', runDiagnosis);
+}
 
 async function runDiagnosis() {
   if (!AppState.currentFile || AppState.isAnalyzing) return;
 
   AppState.isAnalyzing = true;
-  DOM.runDiagnosisBtn.disabled = true;
-  DOM.btnIcon.className = 'spinner';
-  DOM.btnIcon.textContent = '';
-  DOM.btnText.textContent = 'Analysing Foliar Pathology...';
+  if (DOM.runDiagnosisBtn) DOM.runDiagnosisBtn.disabled = true;
+  if (DOM.btnIcon) {
+    DOM.btnIcon.className = 'spinner';
+    DOM.btnIcon.textContent = '';
+  }
+  if (DOM.btnText) DOM.btnText.textContent = 'Analysing Foliar Pathology...';
 
-  const formData = new FormData();
-  formData.append('file', AppState.currentFile);
-  formData.append('use_tta', DOM.ttaToggle.checked);
-  formData.append('tta_passes', DOM.ttaSlider.value);
-  formData.append('confidence_threshold', DOM.confSlider.value);
+  const useTTA = DOM.ttaToggle ? DOM.ttaToggle.checked : true;
+  const ttaPasses = DOM.ttaSlider ? parseInt(DOM.ttaSlider.value, 10) : 9;
+  const confThresh = DOM.confSlider ? parseFloat(DOM.confSlider.value) : 70.0;
 
   try {
-    const startTime = performance.now();
-    const res = await fetch('/api/predict', {
-      method: 'POST',
-      body: formData
-    });
+    let data = null;
+    
+    // 1. Try server endpoint first
+    try {
+      const formData = new FormData();
+      formData.append('file', AppState.currentFile);
+      formData.append('use_tta', useTTA);
+      formData.append('tta_passes', ttaPasses);
+      formData.append('confidence_threshold', confThresh);
 
-    if (!res.ok) {
-      const errJson = await res.json();
-      throw new Error(errJson.detail || 'Prediction failed');
+      const res = await fetch('/api/predict', { method: 'POST', body: formData });
+      if (res.ok) {
+        data = await res.json();
+      }
+    } catch (_) {
+      // Backend not running / static mode
     }
 
-    const data = await res.json();
+    // 2. Client-side In-Browser Engine fallback
+    if (!data) {
+      const tempImg = new Image();
+      tempImg.src = AppState.currentPreviewUrl;
+      await new Promise(resolve => { tempImg.onload = resolve; });
+      data = await runClientInference(tempImg, useTTA, ttaPasses);
+    }
+
     AppState.lastResult = data;
     renderResults(data);
     addToHistory(data, AppState.currentPreviewUrl);
@@ -364,10 +685,12 @@ async function runDiagnosis() {
     showToast(`Error: ${err.message}`, '❌', 5000);
   } finally {
     AppState.isAnalyzing = false;
-    DOM.runDiagnosisBtn.disabled = false;
-    DOM.btnIcon.className = '';
-    DOM.btnIcon.textContent = '🧠';
-    DOM.btnText.textContent = 'Analyze Leaf Pathology';
+    if (DOM.runDiagnosisBtn) DOM.runDiagnosisBtn.disabled = false;
+    if (DOM.btnIcon) {
+      DOM.btnIcon.className = '';
+      DOM.btnIcon.textContent = '🧠';
+    }
+    if (DOM.btnText) DOM.btnText.textContent = 'Analyze Leaf Pathology';
   }
 }
 
@@ -377,186 +700,197 @@ function renderResults(data) {
   const diag = data.diagnostics;
   const meta = data.meta;
 
-  DOM.emptyStateCard.style.display = 'none';
-  DOM.resultsCard.classList.add('active');
+  if (DOM.emptyStateCard) DOM.emptyStateCard.style.display = 'none';
+  if (DOM.resultsCard) DOM.resultsCard.classList.add('active');
 
-  // Timestamp
-  DOM.reportTimestamp.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-  // Banner
-  DOM.resEmoji.textContent = p.emoji;
-  DOM.resTitle.textContent = p.display_name;
-  DOM.resPathogen.textContent = p.pathogen;
-  DOM.resSeverityBadge.textContent = `SEVERITY: ${p.severity}`;
-  DOM.resSeverityBadge.className = `severity-pill ${p.badge_class}`;
-
-  DOM.diagnosisBanner.className = 'diagnosis-banner';
-  if (p.severity_level === 0) DOM.diagnosisBanner.classList.add('severity-none');
-  else if (p.severity_level === 2) DOM.diagnosisBanner.classList.add('severity-moderate');
-  else if (p.severity_level === 3) DOM.diagnosisBanner.classList.add('severity-severe');
-
-  // Emergency Alert
-  if (p.urgent_alert) {
-    DOM.emergencyAlertBox.classList.add('active');
-  } else {
-    DOM.emergencyAlertBox.classList.remove('active');
+  if (DOM.reportTimestamp) {
+    DOM.reportTimestamp.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   }
 
-  // Key Metrics
-  DOM.metricConfidence.textContent = `${p.confidence}%`;
-  DOM.metricConfidence.style.color = p.color;
+  if (DOM.resEmoji) DOM.resEmoji.textContent = p.emoji;
+  if (DOM.resTitle) DOM.resTitle.textContent = p.display_name;
+  if (DOM.resPathogen) DOM.resPathogen.textContent = p.pathogen;
+  if (DOM.resSeverityBadge) {
+    DOM.resSeverityBadge.textContent = `SEVERITY: ${p.severity}`;
+    DOM.resSeverityBadge.className = `severity-pill ${p.badge_class}`;
+  }
 
-  DOM.metricSeverity.textContent = p.severity;
-  DOM.metricSeverity.style.color = p.color;
+  if (DOM.diagnosisBanner) {
+    DOM.diagnosisBanner.className = 'diagnosis-banner';
+    if (p.severity_level === 0) DOM.diagnosisBanner.classList.add('severity-none');
+    else if (p.severity_level === 2) DOM.diagnosisBanner.classList.add('severity-moderate');
+    else if (p.severity_level === 3) DOM.diagnosisBanner.classList.add('severity-severe');
+  }
 
-  DOM.metricLatency.textContent = `${meta.inference_time_ms} ms`;
-  DOM.metricMode.textContent = meta.tta_applied ? `TTA ×${meta.tta_passes}` : 'Single Pass';
+  if (DOM.emergencyAlertBox) {
+    if (p.urgent_alert) DOM.emergencyAlertBox.classList.add('active');
+    else DOM.emergencyAlertBox.classList.remove('active');
+  }
 
-  // Probabilities Bar Chart
+  if (DOM.metricConfidence) {
+    DOM.metricConfidence.textContent = `${p.confidence}%`;
+    DOM.metricConfidence.style.color = p.is_low_confidence ? 'var(--accent-amber)' : 'var(--accent-green)';
+  }
+  if (DOM.metricSeverity) DOM.metricSeverity.textContent = p.severity;
+  if (DOM.metricLatency) DOM.metricLatency.textContent = `${meta.inference_time_ms} ms`;
+  if (DOM.metricMode) DOM.metricMode.textContent = meta.tta_applied ? `TTA (${meta.tta_passes}×)` : 'Single Pass';
+
   const probs = data.probabilities;
-  if (probs['Healthy']) {
-    DOM.probValHealthy.textContent = `${probs['Healthy'].probability}%`;
-    DOM.probFillHealthy.style.width = `${probs['Healthy'].probability}%`;
+  if (DOM.probHealthyVal && probs.Healthy) {
+    DOM.probHealthyVal.textContent = `${probs.Healthy.probability}%`;
+    DOM.probHealthyBar.style.width = `${probs.Healthy.probability}%`;
   }
-  if (probs['Early_Blight']) {
-    DOM.probValEarlyBlight.textContent = `${probs['Early_Blight'].probability}%`;
-    DOM.probFillEarlyBlight.style.width = `${probs['Early_Blight'].probability}%`;
+  if (DOM.probEbVal && probs.Early_Blight) {
+    DOM.probEbVal.textContent = `${probs.Early_Blight.probability}%`;
+    DOM.probEbBar.style.width = `${probs.Early_Blight.probability}%`;
   }
-  if (probs['Late_Blight']) {
-    DOM.probValLateBlight.textContent = `${probs['Late_Blight'].probability}%`;
-    DOM.probFillLateBlight.style.width = `${probs['Late_Blight'].probability}%`;
+  if (DOM.probLbVal && probs.Late_Blight) {
+    DOM.probLbVal.textContent = `${probs.Late_Blight.probability}%`;
+    DOM.probLbBar.style.width = `${probs.Late_Blight.probability}%`;
   }
 
-  // Tabbed Lists
-  renderList(DOM.symptomsList, diag.symptoms);
-  renderList(DOM.treatmentList, diag.treatment);
-  renderList(DOM.preventionList, diag.prevention);
-  renderList(DOM.causesList, diag.causes);
+  if (DOM.diagDescription) DOM.diagDescription.textContent = diag.description;
 
-  // Scroll smoothly to results on mobile devices
-  if (window.innerWidth <= 1024) {
-    DOM.resultsCard.scrollIntoView({ behavior: 'smooth' });
+  populateList(DOM.symptomsList, diag.symptoms);
+  populateList(DOM.treatmentList, diag.treatment);
+  populateList(DOM.preventionList, diag.prevention);
+  populateList(DOM.pathogenCausesList, diag.causes);
+  if (DOM.pathogenName) DOM.pathogenName.textContent = p.pathogen;
+
+  if (DOM.resultsCard) {
+    DOM.resultsCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 }
 
-function renderList(targetElem, items) {
-  targetElem.innerHTML = '';
+function populateList(ulElement, items) {
+  if (!ulElement) return;
+  ulElement.innerHTML = '';
   if (!items || items.length === 0) {
-    targetElem.innerHTML = '<li>No specific items noted.</li>';
+    ulElement.innerHTML = '<li>No specific items documented.</li>';
     return;
   }
   items.forEach(item => {
     const li = document.createElement('li');
     li.textContent = item;
-    targetElem.appendChild(li);
+    ulElement.appendChild(li);
   });
 }
 
-// ── Tab Switching ────────────────────────────────────────────────────────────
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-
-    btn.classList.add('active');
-    const targetId = btn.getAttribute('data-tab');
-    const pane = document.getElementById(targetId);
-    if (pane) pane.classList.add('active');
+// ── Tabs Navigation ──────────────────────────────────────────────────────────
+if (DOM.tabBtns) {
+  DOM.tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      DOM.tabBtns.forEach(b => b.classList.remove('active'));
+      DOM.tabPanes.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const targetId = btn.getAttribute('data-tab');
+      const pane = document.getElementById(targetId);
+      if (pane) pane.classList.add('active');
+    });
   });
-});
+}
 
-// ── Action Toolbar ───────────────────────────────────────────────────────────
-DOM.printReportBtn.addEventListener('click', () => {
-  window.print();
-});
+// ── Export & Summary Actions ─────────────────────────────────────────────────
+if (DOM.printReportBtn) {
+  DOM.printReportBtn.addEventListener('click', () => {
+    window.print();
+  });
+}
 
-DOM.copySummaryBtn.addEventListener('click', async () => {
-  if (!AppState.lastResult) return;
-  const p = AppState.lastResult.prediction;
-  const d = AppState.lastResult.diagnostics;
-  
-  const text = `🥔 POTATO LEAF PATHOLOGY DIAGNOSIS REPORT
---------------------------------------------------
+if (DOM.copySummaryBtn) {
+  DOM.copySummaryBtn.addEventListener('click', () => {
+    if (!AppState.lastResult) return;
+    const p = AppState.lastResult.prediction;
+    const diag = AppState.lastResult.diagnostics;
+    const summaryText = `POTATO LEAF PATHOLOGY REPORT
+----------------------------------
 Diagnosis: ${p.display_name} (${p.pathogen})
-Confidence: ${p.confidence}%
-Severity: ${p.severity}
-Inference Latency: ${AppState.lastResult.meta.inference_time_ms} ms
+Confidence: ${p.confidence}% | Severity: ${p.severity}
+Timestamp: ${new Date().toLocaleString()}
 
-KEY SYMPTOMS:
-${d.symptoms.map(s => `• ${s}`).join('\n')}
+Description:
+${diag.description}
 
-TREATMENT PROTOCOL:
-${d.treatment.map(t => `• ${t}`).join('\n')}
+Key Symptoms:
+${diag.symptoms.map(s => `• ${s}`).join('\n')}
 
-PREVENTION STRATEGIES:
-${d.prevention.map(pr => `• ${pr}`).join('\n')}
---------------------------------------------------
+Actionable Treatment:
+${diag.treatment.map(t => `• ${t}`).join('\n')}
+
+Prevention:
+${diag.prevention.map(pr => `• ${pr}`).join('\n')}
+----------------------------------
 Generated by Potato Leaf Disease AI`;
 
-  try {
-    await navigator.clipboard.writeText(text);
-    showToast('Clinical summary copied to clipboard!', '📋');
-  } catch (err) {
-    showToast('Failed to copy to clipboard', '⚠️');
-  }
-});
+    navigator.clipboard.writeText(summaryText).then(() => {
+      showToast('Clinical summary copied to clipboard', '📋');
+    }).catch(() => {
+      showToast('Failed to copy to clipboard', '❌');
+    });
+  });
+}
 
-DOM.resetScanBtn.addEventListener('click', () => {
-  resetFileInput();
-  DOM.resultsCard.classList.remove('active');
-  DOM.emptyStateCard.style.display = 'block';
-  showToast('Ready for next scan', '🔄');
-});
+if (DOM.scanAnotherBtn) {
+  DOM.scanAnotherBtn.addEventListener('click', () => {
+    resetFileInput();
+    if (DOM.resultsCard) DOM.resultsCard.classList.remove('active');
+    if (DOM.emptyStateCard) DOM.emptyStateCard.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
 
 // ── History Tracking ─────────────────────────────────────────────────────────
-function addToHistory(data, thumbUrl) {
-  const p = data.prediction;
-  const item = {
+function addToHistory(data, previewUrl) {
+  if (!DOM.historySection || !DOM.historyGrid) return;
+  
+  const record = {
     id: Date.now(),
-    name: p.display_name,
-    emoji: p.emoji,
-    confidence: p.confidence,
-    severity: p.severity,
-    color: p.color,
-    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    thumbUrl: thumbUrl
+    name: data.prediction.display_name,
+    emoji: data.prediction.emoji,
+    conf: data.prediction.confidence,
+    thumb: previewUrl,
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   };
 
-  AppState.scanHistory.unshift(item);
-  if (AppState.scanHistory.length > 6) {
-    AppState.scanHistory.pop();
-  }
+  AppState.scanHistory.unshift(record);
+  if (AppState.scanHistory.length > 6) AppState.scanHistory.pop();
+
   renderHistory();
 }
 
 function renderHistory() {
+  if (!DOM.historyGrid) return;
+  DOM.historyGrid.innerHTML = '';
   if (AppState.scanHistory.length === 0) {
-    DOM.historySection.style.display = 'none';
+    if (DOM.historySection) DOM.historySection.style.display = 'none';
     return;
   }
 
-  DOM.historySection.style.display = 'block';
-  DOM.historyGrid.innerHTML = '';
-
+  if (DOM.historySection) DOM.historySection.style.display = 'block';
   AppState.scanHistory.forEach(item => {
     const card = document.createElement('div');
-    card.className = 'history-card';
+    card.className = 'history-item';
     card.innerHTML = `
-      <img src="${item.thumbUrl}" class="history-thumb" alt="Scan thumbnail">
-      <div style="flex: 1; overflow: hidden;">
-        <div class="history-meta-title" style="color: ${item.color}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-          ${item.emoji} ${item.name}
-        </div>
-        <div class="history-meta-sub">${item.confidence}% • ${item.timestamp}</div>
+      <img src="${item.thumb}" class="history-thumb" alt="${item.name}">
+      <div>
+        <div style="font-weight: 600; font-size: 0.85rem;">${item.emoji} ${item.name}</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">${item.conf}% • ${item.time}</div>
       </div>
     `;
     DOM.historyGrid.appendChild(card);
   });
 }
 
-// ── Initialize App ───────────────────────────────────────────────────────────
+// ── Application Initialization ───────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   loadPresetSamples();
-  showToast('Potato Leaf AI System Ready', '🥔');
+  initTFLiteEngine();
 });
+
+// Immediate load fallback
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  initTheme();
+  loadPresetSamples();
+  initTFLiteEngine();
+}
