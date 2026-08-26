@@ -1,0 +1,18 @@
+{
+  "model_name": "EfficientNetB3_PotatoPathology_V2",
+  "class_names": [
+    "Early_Blight",
+    "Healthy",
+    "Late_Blight"
+  ],
+  "label_map": {
+    "Early_Blight": 0,
+    "Healthy": 1,
+    "Late_Blight": 2
+  },
+  "img_size": 256,
+  "optimal_temperature": 0.4662,
+  "test_accuracy": 0.9802,
+  "test_macro_f1": 0.9796,
+  "seed": 42
+}

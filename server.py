@@ -18,10 +18,18 @@ MODEL_PATH = os.path.join(os.path.dirname(__file__), "model", "potato_quantized.
 IMG_SIZE = 256
 CLASS_NAMES = ["Early_Blight", "Healthy", "Late_Blight"]
 
-# Temperature scaling: compensates for label_smoothing=0.1 which suppresses confidence.
-# T < 1.0 sharpens the softmax distribution. Calibrated empirically on validation set.
-# After retraining (Part 2), this can be set to a model-saved value.
-TEMPERATURE = 0.70
+# Temperature scaling: calibrated on validation set via L-BFGS-B optimization
+METADATA_PATH = os.path.join(os.path.dirname(__file__), "model", "class_names.json")
+TEMPERATURE = 0.4662
+if os.path.exists(METADATA_PATH):
+    try:
+        with open(METADATA_PATH, "r") as f:
+            _meta = json.load(f)
+            TEMPERATURE = float(_meta.get("optimal_temperature", 0.4662))
+            if "class_names" in _meta:
+                CLASS_NAMES = _meta["class_names"]
+    except Exception as e:
+        print(f"Metadata load notice: {e}")
 
 DISEASE_INFO = {
     "Early_Blight": {
