@@ -172,12 +172,12 @@ const DOM = {
   metricLatency: document.getElementById('metricLatency'),
   metricMode: document.getElementById('metricMode'),
   
-  probHealthyVal: document.getElementById('probHealthyVal'),
-  probHealthyBar: document.getElementById('probHealthyBar'),
-  probEbVal: document.getElementById('probEbVal'),
-  probEbBar: document.getElementById('probEbBar'),
-  probLbVal: document.getElementById('probLbVal'),
-  probLbBar: document.getElementById('probLbBar'),
+  probHealthyVal: document.getElementById('probValHealthy') || document.getElementById('probHealthyVal'),
+  probHealthyBar: document.getElementById('probFillHealthy') || document.getElementById('probHealthyBar'),
+  probEbVal: document.getElementById('probValEarlyBlight') || document.getElementById('probEbVal'),
+  probEbBar: document.getElementById('probFillEarlyBlight') || document.getElementById('probEbBar'),
+  probLbVal: document.getElementById('probValLateBlight') || document.getElementById('probLbVal'),
+  probLbBar: document.getElementById('probFillLateBlight') || document.getElementById('probLbBar'),
 
   tabBtns: document.querySelectorAll('.tab-btn'),
   tabPanes: document.querySelectorAll('.tab-pane'),
@@ -820,18 +820,19 @@ function renderResults(data) {
   if (DOM.metricMode) DOM.metricMode.textContent = meta.tta_applied ? `TTA (${meta.tta_passes}×)` : 'Single Pass';
 
   const probs = data.probabilities;
-  if (DOM.probHealthyVal && probs.Healthy) {
-    DOM.probHealthyVal.textContent = `${probs.Healthy.probability}%`;
-    DOM.probHealthyBar.style.width = `${probs.Healthy.probability}%`;
-  }
-  if (DOM.probEbVal && probs.Early_Blight) {
-    DOM.probEbVal.textContent = `${probs.Early_Blight.probability}%`;
-    DOM.probEbBar.style.width = `${probs.Early_Blight.probability}%`;
-  }
-  if (DOM.probLbVal && probs.Late_Blight) {
-    DOM.probLbVal.textContent = `${probs.Late_Blight.probability}%`;
-    DOM.probLbBar.style.width = `${probs.Late_Blight.probability}%`;
-  }
+  const hlVal = DOM.probHealthyVal || document.getElementById('probValHealthy');
+  const hlBar = DOM.probHealthyBar || document.getElementById('probFillHealthy');
+  const ebVal = DOM.probEbVal || document.getElementById('probValEarlyBlight');
+  const ebBar = DOM.probEbBar || document.getElementById('probFillEarlyBlight');
+  const lbVal = DOM.probLbVal || document.getElementById('probValLateBlight');
+  const lbBar = DOM.probLbBar || document.getElementById('probFillLateBlight');
+
+  if (hlVal && probs.Healthy) hlVal.textContent = `${probs.Healthy.probability}%`;
+  if (hlBar && probs.Healthy) hlBar.style.width = `${probs.Healthy.probability}%`;
+  if (ebVal && probs.Early_Blight) ebVal.textContent = `${probs.Early_Blight.probability}%`;
+  if (ebBar && probs.Early_Blight) ebBar.style.width = `${probs.Early_Blight.probability}%`;
+  if (lbVal && probs.Late_Blight) lbVal.textContent = `${probs.Late_Blight.probability}%`;
+  if (lbBar && probs.Late_Blight) lbBar.style.width = `${probs.Late_Blight.probability}%`;
 
   if (DOM.diagDescription) DOM.diagDescription.textContent = diag.description;
 
