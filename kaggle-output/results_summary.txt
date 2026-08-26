@@ -1,0 +1,33 @@
+RESULTS SUMMARY — Potato Leaf Disease Classification (EfficientNetB3)
+=================================================================
+Seed                    : 42
+Input size              : 256x256
+Classes                 : Early_Blight, Healthy, Late_Blight
+Split                   : pooled train+val -> stratified 90/10; vendor Testing held out entirely
+Imbalance handling      : inverse-frequency class weights {0: 0.834, 1: 1.3317, 2: 0.9524}
+Augmentation            : flip H/V, rot +/-20deg, shift 15%, zoom <=0.2, brightness 0.85-1.25
+Loss                    : categorical CE, label smoothing 0.1
+Selection metric        : val macro-F1 (EarlyStopping patience 6, best-only checkpoints)
+
+Ablation (val set)      :
+                Params(M)   Val Acc  Val macro-F1
+Backbone                                         
+EfficientNetB0        4.4  0.468665      0.340231
+EfficientNetB3       11.2  0.964578      0.967265
+
+HELD-OUT TEST METRICS (EfficientNetB3, best-val-F1 weights)
+-----------------------------------------------------------
+Test accuracy           : 0.9580
+Test macro-F1           : 0.9586
+
+Per-class report:
+              precision    recall  f1-score   support
+
+Early_Blight     0.9742    0.9321    0.9527       162
+     Healthy     0.9352    0.9902    0.9619       102
+ Late_Blight     0.9577    0.9645    0.9611       141
+
+    accuracy                         0.9580       405
+   macro avg     0.9557    0.9623    0.9586       405
+weighted avg     0.9586    0.9580    0.9579       405
+

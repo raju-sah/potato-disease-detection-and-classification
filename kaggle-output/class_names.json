@@ -1,0 +1,14 @@
+{
+  "class_names": [
+    "Early_Blight",
+    "Healthy",
+    "Late_Blight"
+  ],
+  "label_map": {
+    "Early_Blight": 0,
+    "Healthy": 1,
+    "Late_Blight": 2
+  },
+  "img_size": 256,
+  "seed": 42
+}

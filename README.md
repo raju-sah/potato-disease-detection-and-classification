@@ -139,7 +139,7 @@ Dense(3, Softmax)
 | **Data Augmentation** | Flip, rotation ±20°, zoom, shift, brightness |
 | **TTA** | Averaged augmented passes (mirror/flip/rotations) at inference |
 | **Callbacks** | EarlyStopping, ReduceLROnPlateau, ModelCheckpoint |
-| **Export** | TFLite Float32 + Dynamic Quantized |
+| **Export** | TFLite Float16 Quantized (21 MB, input 256×256×3) |
 
 ---
 
@@ -263,14 +263,20 @@ Runs at `http://localhost:8501`. Note: `packages.txt` + `requirements.txt` are o
 
 ## 📈 Results
 
+Trained and evaluated in the Kaggle notebook `rajucode/potato-leaf-disease-classification-efficientnetb3` (v5, 2026-05). All metrics on the held-out 405-image test set.
+
 | Metric | Value |
 |--------|-------|
-| Best Validation Accuracy (Phase 1) | ~92–94% |
-| Best Validation Accuracy (Fine-tune) | ~96–98% |
-| TTA Test Accuracy | +1–2% above standard |
-| Float32 TFLite Size | ~45 MB |
-| Quantized TFLite Size | ~12 MB |
-| Compression Ratio | ~4× smaller |
+| **Test Accuracy** | **95.80%** |
+| **Macro-F1** | **95.86%** |
+| Early Blight F1 | 0.953 |
+| Healthy F1 | 0.962 |
+| Late Blight F1 | 0.961 |
+| Best Val F1 (B3) | 0.967 |
+| Ablation — B0 best Val F1 | 0.340 (motivated B3 upgrade) |
+| Quantized TFLite Size | ~21 MB (float16) |
+
+> Note: production `model/potato_quantized.tflite` is the EfficientNetB3 checkpoint above (not the older B0-derived weights). Preprocessing is `RGB / 255.0` at 256×256 — matching the notebook.
 
 ---
 

@@ -1,0 +1,14 @@
+{
+  "id": "rajucode/potato-leaf-disease-classification-efficientnetb3",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "false",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "dataset_sources": [
+    "rizwan123456789/potato-disease-leaf-datasetpld"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "code_file": "potato-leaf-disease-classification-efficientnetb3.ipynb"
+}
