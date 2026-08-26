@@ -1,3 +1,14 @@
+---
+title: Potato Leaf Disease Pathology AI
+emoji: 🥔
+colorFrom: green
+colorTo: red
+sdk: docker
+app_port: 7860
+pinned: false
+license: mit
+---
+
 # 🥔 Potato Leaf Disease Detector
 ### AI-Powered Plant Disease Classification using EfficientNetB3 + FastAPI
 
@@ -6,6 +17,9 @@
   <img src="https://img.shields.io/badge/TensorFlow_Lite-Quantized-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white"/>
   <img src="https://img.shields.io/badge/FastAPI-0.110+-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
   <img src="https://img.shields.io/badge/EfficientNetB3-ImageNet-00BFA5?style=for-the-badge"/>
+  <a href="https://huggingface.co/spaces/raju-ai/potato-leaf-disease-classifier">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Live%20Demo-FFD21E?style=for-the-badge"/>
+  </a>
   <a href="https://www.kaggle.com/code/rajucode/potato-leaf-disease-classification-efficientnetb3">
     <img src="https://img.shields.io/badge/Kaggle_Notebook-Open_in_Kaggle-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white"/>
   </a>
@@ -13,6 +27,7 @@
 </p>
 
 <p align="center">
+  🚀 <b>Live Hugging Face Production Demo:</b> <a href="https://huggingface.co/spaces/raju-ai/potato-leaf-disease-classifier"><b>huggingface.co/spaces/raju-ai/potato-leaf-disease-classifier</b></a><br/>
   📓 <b>Official Kaggle Training Notebook:</b> <a href="https://www.kaggle.com/code/rajucode/potato-leaf-disease-classification-efficientnetb3"><b>rajucode/potato-leaf-disease-classification-efficientnetb3</b></a>
 </p>
 
