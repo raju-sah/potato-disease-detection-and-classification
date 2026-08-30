@@ -20,4 +20,5 @@ echo "Press Ctrl+C to stop."
 echo "======================================================="
 
 PORT=${PORT:-8080}
-.venv/bin/python3 server.py
+export PYTHONPATH=$DIR
+.venv/bin/python3 backend/main.py
