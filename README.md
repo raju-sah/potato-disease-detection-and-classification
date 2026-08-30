@@ -10,13 +10,13 @@ license: mit
 ---
 
 # 🥔 Potato Leaf Disease Detector
-### AI-Powered Plant Disease Classification using EfficientNetB3 + FastAPI
+### AI-Powered Plant Disease Classification using EfficientNetV2B3 + FastAPI
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
   <img src="https://img.shields.io/badge/TensorFlow_Lite-Quantized-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white"/>
   <img src="https://img.shields.io/badge/FastAPI-0.110+-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
-  <img src="https://img.shields.io/badge/EfficientNetB3-ImageNet-00BFA5?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/EfficientNetV2B3-ImageNet-00BFA5?style=for-the-badge"/>
   <a href="https://huggingface.co/spaces/raju-ai/potato-leaf-disease-classifier">
     <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Live%20Demo-FFD21E?style=for-the-badge"/>
   </a>
@@ -44,7 +44,7 @@ license: mit
 - [Dataset](#-dataset)
 - [Installation & Local Setup](#-installation--local-setup)
 - [API Reference](#-api-reference)
-- [Legacy Streamlit App](#-legacy-streamlit-app)
+
 - [Results](#-results)
 - [Tech Stack](#-tech-stack)
 - [Author](#-author)
@@ -54,7 +54,7 @@ license: mit
 
 ## 🌿 Overview
 
-This project is an end-to-end **deep learning pipeline** for detecting and classifying **potato leaf diseases** from images. It uses **EfficientNetB3** pretrained on ImageNet and fine-tuned on the **Potato Disease Leaf Dataset (PLD)**. The trained model is converted to **TensorFlow Lite** and served through a **FastAPI backend** with a lightweight **vanilla HTML/CSS/JS frontend**.
+This project is an end-to-end **deep learning pipeline** for detecting and classifying **potato leaf diseases** from images. It uses **EfficientNetV2B3** pretrained on ImageNet and fine-tuned on the **Potato Disease Leaf Dataset (PLD)**. The trained model is converted to **TensorFlow Lite** and served through a **FastAPI backend** with a lightweight **vanilla HTML/CSS/JS frontend**.
 
 > 📓 **Full Training Pipeline:** All data preparation, model training, evaluation, and TFLite quantization can be explored and run in the official Kaggle Notebook:  
 > 🔗 **[Kaggle: potato-leaf-disease-classification-efficientnetb3](https://www.kaggle.com/code/rajucode/potato-leaf-disease-classification-efficientnetb3)**
@@ -98,8 +98,7 @@ potato-leaf-disease-classification/
 ├── start.sh                        ← One-command launcher (creates venv, installs deps, starts server)
 ├── requirements_app.txt            ← Backend dependencies (FastAPI, LiteRT, Pillow…)
 ├── create_samples.py               ← Generates synthetic demo leaf images
-├── packages.txt                    ← System-level packages (Streamlit Cloud, legacy)
-├── requirements.txt                ← Streamlit dependencies (legacy)
+
 ├── .gitignore
 ├── README.md
 │
@@ -110,23 +109,22 @@ potato-leaf-disease-classification/
 │   └── samples/                    ← Demo images served at /static/samples/
 │
 └── model/
-    └── potato_quantized.tflite     ← TFLite quantized model (EfficientNetB3)
+    └── potato_quantized.tflite     ← TFLite quantized model (EfficientNetV2B3)
 ```
 
-> `app.py` is the original **Streamlit** app, kept as a legacy alternative (see below).
 
 ---
 
 ## 🧠 Model Architecture
 
-### Base Model: EfficientNetB3
+### Base Model: EfficientNetV2B3
 - Pretrained on **ImageNet** (1000 classes)
 - Input size: **256 × 256 × 3**
 - Output: 3-class softmax
 
 ### Custom Classification Head
 ```
-EfficientNetB3 (frozen backbone)
+EfficientNetV2B3 (frozen backbone)
     ↓
 GlobalAveragePooling2D
     ↓
@@ -143,7 +141,7 @@ Dense(3, Softmax)
 
 | Phase | Frozen Layers | Learning Rate | Purpose |
 |-------|--------------|---------------|---------|
-| **Phase 1** — Head only | All EfficientNetB3 | `1e-3` | Learn task-specific features |
+| **Phase 1** — Head only | All EfficientNetV2B3 | `1e-3` | Learn task-specific features |
 | **Phase 2** — Fine-tune | Layers 0→100 | `5e-5` | Adapt deep features to potato domain |
 
 ### Key Techniques
@@ -263,19 +261,6 @@ Response (abridged):
 
 ---
 
-## 🖥️ Legacy Streamlit App
-
-The original Streamlit UI (`app.py`) is still included:
-
-```bash
-pip install -r requirements.txt
-streamlit run app.py
-```
-
-Runs at `http://localhost:8501`. Note: `packages.txt` + `requirements.txt` are only needed if deploying that variant to Streamlit Community Cloud.
-
----
-
 ## 📈 Results
 
 Trained and evaluated in the Kaggle notebook `rajucode/potato-leaf-disease-classification-efficientnetb3` (v5, 2026-05). All metrics on the held-out 405-image test set.
@@ -291,7 +276,7 @@ Trained and evaluated in the Kaggle notebook `rajucode/potato-leaf-disease-class
 | Ablation — B0 best Val F1 | 0.340 (motivated B3 upgrade) |
 | Quantized TFLite Size | ~21 MB (float16) |
 
-> Note: production `model/potato_quantized.tflite` is the EfficientNetB3 checkpoint above (not the older B0-derived weights). Preprocessing is `RGB / 255.0` at 256×256 — matching the notebook.
+> Note: production `model/potato_quantized.tflite` is the EfficientNetV2B3 checkpoint above (not the older B0-derived weights). Preprocessing is `RGB / 255.0` at 256×256 — matching the notebook.
 
 ---
 
@@ -306,7 +291,7 @@ Trained and evaluated in the Kaggle notebook `rajucode/potato-leaf-disease-class
 | ![JavaScript](https://img.shields.io/badge/-Vanilla_JS-F7DF1E?logo=javascript&logoColor=black) | Frontend (no framework, no build step) |
 | ![Pillow](https://img.shields.io/badge/-Pillow-purple) | Image preprocessing |
 | ![NumPy](https://img.shields.io/badge/-NumPy-013243?logo=numpy&logoColor=white) | Array operations |
-| ![Streamlit](https://img.shields.io/badge/-Streamlit_(legacy)-FF4B4B?logo=streamlit&logoColor=white) | Original web app variant |
+
 | ![Kaggle](https://img.shields.io/badge/-Kaggle-20BEFF?logo=kaggle&logoColor=white) | Training environment & dataset |
 
 ---
