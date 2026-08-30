@@ -1,0 +1,6 @@
+Architecture,Params (M),Latency (ms),ID Accuracy (%),ID Macro-F1 (%),Training Time (s)
+ResNet50,24.12,210.97,44.2,29.1,698.4
+DenseNet121,7.31,414.37,99.75,99.73,1943.9
+EfficientNetV2S,20.67,566.95,64.44,62.29,823.6
+ConvNeXtTiny,28.02,3389.64,64.69,65.22,880.1
+MobileNetV3,3.25,172.45,40.74,21.05,486.7

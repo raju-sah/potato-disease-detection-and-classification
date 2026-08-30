@@ -1,5 +1,5 @@
 {
-  "model_name": "EfficientNetB3_PotatoPathology_V2",
+  "model_name": "DenseNet121_PotatoPathology_Research_Benchmark",
   "class_names": [
     "Early_Blight",
     "Healthy",
@@ -12,7 +12,7 @@
   },
   "img_size": 256,
   "optimal_temperature": 0.4662,
-  "test_accuracy": 0.9802,
-  "test_macro_f1": 0.9796,
+  "test_accuracy": 0.9975,
+  "test_macro_f1": 0.9973,
   "seed": 42
 }
